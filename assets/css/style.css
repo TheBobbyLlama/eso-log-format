@@ -1,0 +1,321 @@
+:root {
+	--page-background: #202020;
+	--inset-background: #101010;
+	--content-color: white;
+	--content-background: #404040;
+	--content-border: #202020;
+	--subordinate-text: #e0e0e0;
+	--comment-background: #383838;
+	--gm-color: silver;
+	--gm-background: #303030;
+	--important-background: #606060;
+	--printout-color: black;
+	--printout-background: silver;
+	--link-color: #80c0ff;
+	--link-visited: #5090e0;
+	--common-green: #c0ffb0;
+	--common-gold: #fff0c0;
+	--common-red: #ffc0b0;
+	--common-alert: #ff2000;
+
+	--nav-width: 160px;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: var(--page-background);
+	color: var(--content-color);
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	margin: 0px;
+	padding: 0px;
+}
+
+a:link {
+	color: var(--link-color);
+}
+
+a:visited {
+	color: var(--link-visited);
+}
+
+a.button:link, button {
+	background-color: #e0e0e0;
+	border-bottom: solid 2px #808080;
+	border-left: solid 2px silver;
+	border-radius: 4px;
+	border-right: solid 2px #808080;
+	border-top: solid 2px silver;
+	cursor: pointer;
+	color: black;
+	display: inline-block;
+	margin: 2px;
+	padding: 2px 8px;
+	text-decoration: none;
+}
+
+a:link.button:not(.disabled):hover, button:hover {
+	background-color: #f0f0f0;
+}
+
+a:link.button.disabled, button[disabled] {
+	color: darkgray;
+	cursor: default;
+}
+
+h1, h2, h3, h4 {
+	font-weight: bold;
+	text-align: center;
+}
+
+section {
+	background-color: var(--content-background);
+	border-radius: 8px;
+	margin: 10px;
+	padding: 10px 20px;
+	text-align: left;
+}
+
+section h2, section h3 {
+	margin-bottom: 8px;
+	text-align: center;
+}
+
+textarea {
+	border-radius: 4px;
+	resize: none;
+}
+
+#mainLayout {
+	align-items: stretch;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+}
+
+#metaData {
+	align-items: flex-start;
+	display: flex;
+	flex-basis: 1%;
+	justify-content: space-evenly;
+}
+
+#listScroller {
+	max-height: 240px;
+	overflow: auto;
+}
+
+#optionsCard {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+}
+
+#optionsCard div + div {
+	margin-top: 8px;
+}
+
+#editingPane {
+	display: flex;
+	flex-basis: 99%;
+	overflow: hidden;
+}
+
+#inputPane {
+	display: flex;
+	flex-basis: 50%;
+	flex-direction: column;
+	padding: 10px;
+}
+
+#inputPane textarea {
+	flex-basis: 99%;
+	width: 100%;
+}
+
+#resultPane {
+	display: flex;
+	flex-basis: 50%;
+	flex-direction: column;
+	justify-content: flex-start;
+	overflow: auto;
+	padding: 10px;
+}
+
+#resultScroller {
+	border: solid 1px var(--content-border);
+	border-radius: 4px;
+	display: flex;
+	flex-basis: 99%;
+	overflow: auto;
+	padding: 4px 20px 4px 8px;
+}
+
+#result {
+	font-size: 13.3333px;
+}
+
+#result p + p {
+	margin-top: 4px;
+}
+
+.timestamp {
+	color: silver;
+	font-family: 'Courier New', Courier, monospace;
+}
+
+.say {
+	color: white;
+}
+
+.emote {
+	color: #d8d8ff;
+}
+
+.whisper {
+	color: #00ffff;
+}
+
+.guild {
+	color: #0080ff;
+}
+
+.gmPost {
+	color: #ffc000;
+	font-weight: bold;
+}
+
+.persona0 {
+	color: #a0ffa0;
+}
+
+.persona1 {
+	color: #a0a0ff;
+}
+
+.persona2 {
+	color: #ffffa0;
+}
+
+.persona3 {
+	color: #ffa0a0;
+}
+
+.persona4 {
+	color: #a0ffff;
+}
+
+.persona5 {
+	color: #ffa0ff;
+}
+
+.persona6 {
+	color: #ffd0a0;
+}
+
+.persona7 {
+	color: #ffa0d0;
+}
+
+.persona8 {
+	color: #d0ffa0;
+}
+
+.persona9 {
+	color: #a0ffd0;
+}
+
+.persona10 {
+	color: #a0d0ff;
+}
+
+.persona11 {
+	color: #d0a0ff;
+}
+
+.persona12 {
+	color: #408040;
+}
+
+.persona13 {
+	color: #202080;
+}
+
+.persona14 {
+	color: #808040;
+}
+
+.persona15 {
+	color: #804040;
+}
+
+.persona16 {
+	color: #408080;
+}
+
+.persona17 {
+	color: #804080;
+}
+
+.persona18 {
+	color: #806040;
+}
+
+.persona19 {
+	color: #804060;
+}
+
+.persona20 {
+	color: #608040;
+}
+
+.persona21 {
+	color: #408060;
+}
+
+.persona22 {
+	color: #205080;
+}
+
+.persona23 {
+	color: #502080;
+}
+
+.persona24 {
+	color: #00a000;
+}
+
+.persona25 {
+	color: #0000a0;
+}
+
+.persona26 {
+	color: #a0a000;
+}
+
+.persona27 {
+	color: #a00000;
+}
+
+.persona28 {
+	color: #00a0a0;
+}
+
+.persona29 {
+	color: #a000a0;
+}
+
+@media screen and (max-width: 800px) {
+	#editingPane {
+		flex-direction: column;
+	}
+}

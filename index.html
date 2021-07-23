@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ESO Log Formatter</title>
+	<link rel="stylesheet" href="./assets/css/style.css" />
+</head>
+<body>
+	<div id="mainLayout">
+		<h1>ESO Log Formatter</h1>
+		<section id="metaData">
+			<div id="personaCard">
+				<h2>Dramatis Personae</h2>
+				<div id="listScroller">
+					<ol id="dramatisPersonae"></ol>
+				</div>
+			</div>
+			<div id="optionsCard">
+				<h2>Output Options</h2>
+				<div>
+					<input id="omitTimestamps" type="checkbox"></input>
+					<label for="omitTimestamps">Omit Timestamps</label>
+				</div>
+				<div>
+					<input id="guildChatGM" type="checkbox" checked="true"></input>
+					<label for="guildChatGM">Guild Chat as Narrator</label>
+				</div>
+				<div>
+					<select id="characterGM" disabled="disabled"></select>
+					<label for="characterGM">as Narrator</label>
+				</div>
+				<div>
+					<a id="exportFile" class="button disabled" href="#">Save...</a>
+				</div>
+			</div>
+		</section>
+		<section id="editingPane">
+			<div id="inputPane">
+				<h2>Raw Text</h2>
+				<textarea id="pastedText" placeholder="Paste log text here."></textarea>
+			</div>
+			<div id="resultPane">
+				<h2>Formatted Text</h2>
+				<div id="resultScroller">
+					<div id="result"></div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<script type="text/javascript" src="assets/js/script.js"></script>
+</body>
+</html>
