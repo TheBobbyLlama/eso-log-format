@@ -35,8 +35,8 @@ function displayFormattedLog() {
 			}
 
 			if (curChannel == "whisper") {
-				curMarkup += "<span class='whisper'>TELL -&gt;</span> ";
-				fileOutput += "TELL -> ";
+				curMarkup += "<span class='aside'>(privately) </span>";
+				fileOutput += "(privately) ";
 			}
 
 			// Character name

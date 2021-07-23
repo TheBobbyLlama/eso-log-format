@@ -168,6 +168,10 @@ textarea {
 	margin-top: 4px;
 }
 
+.aside {
+	color: #d0d0d0;
+}
+
 .timestamp {
 	color: silver;
 	font-family: 'Courier New', Courier, monospace;
