@@ -189,7 +189,7 @@ function processLog(e) {
 							curData.message = curLine[0];
 						}
 
-						curData.channel = "emote";
+						curData.channel = (curData.message[0] == "\"") ? "say" : "emote";
 						break;
 					default:
 						curData.sender = curLine.splice(0, 1)[0];
