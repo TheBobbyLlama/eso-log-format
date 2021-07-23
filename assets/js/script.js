@@ -9,6 +9,7 @@ var exportButton = document.getElementById("exportFile");
 var personaeList = document.getElementById("dramatisPersonae");
 
 var dramatisPersonae;
+var narrator = null;
 var logData = [];
 var scrollLockout = 0;
 
@@ -23,7 +24,7 @@ function displayFormattedLog() {
 			var curSender = logData[i].sender;
 			var curChannel = logData[i].channel;
 
-			if (((curChannel == "guild") && (guildChatOption.checked)) || ((characterGMOption.selectedIndex > 0) && (curSender == characterGMOption.value))){
+			if (((curChannel == "guild") && (guildChatOption.checked)) || (curSender == narrator)){
 				curSender = "NARRATOR";
 				curChannel = "gmPost";
 			}
@@ -87,6 +88,7 @@ function displayFormattedLog() {
 
 function processLog(e) {
 	var workingList;
+	var gmMarkup = "";
 
 	dramatisPersonae = [];
 	logData = [];
@@ -152,13 +154,21 @@ function processLog(e) {
 
 		if (dramatisPersonae.length > 0) {
 			characterGMOption.removeAttribute("disabled");
-			characterGMOption.innerHTML = "<option>-- Nobody --</option>";
+			gmMarkup = "<option>-- Nobody --</option>";
 		}
 
 		for (var i = 0; i < dramatisPersonae.length; i++) {
 			personaeList.innerHTML += "<li class='persona" + i + "'>" + dramatisPersonae[i] + "</li>";
-			characterGMOption.innerHTML += "<option>" + dramatisPersonae[i] + "</option>";
+			gmMarkup += "<option"
+
+			if (dramatisPersonae[i] == narrator) {
+				gmMarkup += " selected='true'"
+			}
+
+			gmMarkup += ">" + dramatisPersonae[i] + "</option>";
 		}
+
+		characterGMOption.innerHTML = gmMarkup;
 
 		// MAIN PASS - Turn lines into objects.
 		lines.forEach(element => {
@@ -251,7 +261,15 @@ function scrollOutput() {
 
 timestampOption.addEventListener("change", displayFormattedLog);
 guildChatOption.addEventListener("change", displayFormattedLog);
-characterGMOption.addEventListener("change", displayFormattedLog);
+characterGMOption.addEventListener("change", () => {
+	if (characterGMOption.selectedIndex > 0) {
+		narrator = dramatisPersonae[characterGMOption.selectedIndex - 1];
+	} else {
+		narrator = null;
+	}
+
+	displayFormattedLog();
+});
 exportButton.addEventListener("click", (e) => {
 	if (exportButton.className.indexOf("disabled") > -1) {
 		e.preventDefault();
