@@ -4,6 +4,7 @@ var resultScroller = document.getElementById("resultScroller");
 var timestampOption = document.getElementById("omitTimestamps");
 var guildChatOption = document.getElementById("guildChatGM");
 var characterGMOption = document.getElementById("characterGM");
+var sessionName = document.getElementById("sessionName");
 var exportButton = document.getElementById("exportFile");
 
 var personaeList = document.getElementById("dramatisPersonae");
@@ -12,6 +13,18 @@ var dramatisPersonae;
 var narrator = null;
 var logData = [];
 var scrollLockout = 0;
+
+function setSessionName() {
+	var today = new Date();
+	var year = today.getFullYear().toString();
+	var month = (today.getMonth() + 1).toString();
+	var day = today.getDate().toString();
+
+	while (month.length < 2) { month = "0" + month; }
+	while (day.length < 2) { day = "0" + day; }
+
+	exportButton.setAttribute("download", year + month + day + "-" + ((sessionName.value) ? sessionName.value : "RP") + ".txt");
+}
 
 function displayFormattedLog() {
 	var fileOutput = "";
@@ -24,7 +37,7 @@ function displayFormattedLog() {
 			var curSender = logData[i].sender;
 			var curChannel = logData[i].channel;
 
-			if (((curChannel == "guild") && (guildChatOption.checked)) || (curSender == narrator)){
+			if (((guildChatOption.checked) && (curChannel == "guild")) || ((narrator) && (curSender == narrator))) {
 				curSender = "NARRATOR";
 				curChannel = "gmPost";
 			}
@@ -48,7 +61,7 @@ function displayFormattedLog() {
 
 			switch (curChannel) {
 				case "emote":
-					if ((!logData[i].message.startsWith("'s ")) && (!logData[i].message.startsWith(", "))) {
+					if ((curSender) && (!logData[i].message.startsWith("'s ")) && (!logData[i].message.startsWith(", "))) {
 						curMarkup += " ";
 						fileOutput += " ";
 					}
@@ -68,17 +81,12 @@ function displayFormattedLog() {
 	}
 
 	if (fileOutput) {
-		var today = new Date();
-		var year = today.getFullYear().toString();
-		var month = (today.getMonth() + 1).toString();
-		var day = today.getDate().toString();
-
-		while (month.length < 2) { month = "0" + month; }
-		while (day.length < 2) { day = "0" + day; }
+		fileOutput = fileOutput.trim();
 
 		exportButton.setAttribute("href", URL.createObjectURL(new Blob([ fileOutput ], { type: "text/plain" })));
-		exportButton.setAttribute("download", year + month + day + "-RP.txt");
 		exportButton.className = "button";
+
+		setSessionName();
 	} else {
 		exportButton.setAttribute("href", "#");
 		exportButton.removeAttribute("download");
@@ -101,7 +109,7 @@ function processLog(e) {
 
 		// First pass - Try to extract character names from normal /say text.
 		lines.forEach(element => {
-			var matchMe = element.match(/(\[.*?\] )([\w].+?)(@|:| 's)/);
+			var matchMe = element.match(/(\[.*?\] (?:@.+\/)?)([\w].+?)(@|:| 's)/);
 			
 			if ((matchMe) && (matchMe.length == 4) && (matchMe[2].length <= 25) &&  (matchMe[2].indexOf("->") < 0) && (!dramatisPersonae.find(item => item == matchMe[2]))) {
 				dramatisPersonae.push(matchMe[2]);
@@ -270,6 +278,7 @@ characterGMOption.addEventListener("change", () => {
 
 	displayFormattedLog();
 });
+sessionName.addEventListener("change", setSessionName);
 exportButton.addEventListener("click", (e) => {
 	if (exportButton.className.indexOf("disabled") > -1) {
 		e.preventDefault();
