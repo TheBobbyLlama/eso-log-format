@@ -37,7 +37,7 @@ function displayFormattedLog() {
 			var curSender = logData[i].sender;
 			var curChannel = logData[i].channel;
 
-			if (((guildChatOption.checked) && (curChannel == "guild")) || ((narrator) && (curSender == narrator))) {
+			if ((curChannel == "gmPost") || ((guildChatOption.checked) && (curChannel == "guild")) || ((narrator) && (curSender == narrator))) {
 				curSender = "NARRATOR";
 				curChannel = "gmPost";
 			}
