@@ -64,7 +64,7 @@ function displayFormattedLog() {
 		}
 
 		outputArea.innerHTML += curMarkup + "</p>";
-		fileOutput += "\n";
+		fileOutput += "\n\n";
 	}
 
 	if (fileOutput) {
