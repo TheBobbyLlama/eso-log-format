@@ -199,7 +199,7 @@ function processLog(e) {
 						for (var i = 0; i < dramatisPersonae.length; i++) {
 							if (curLine[0].startsWith(dramatisPersonae[i])) {
 								curData.sender = dramatisPersonae[i];
-								curData.message = curLine[0].substr(dramatisPersonae[i].length + 1);
+								curData.message = curLine[0].substr(dramatisPersonae[i].length + 1).trim();
 							}
 						}
 
@@ -211,9 +211,14 @@ function processLog(e) {
 						break;
 					default:
 						curData.sender = curLine.splice(0, 1)[0];
-						curData.message = curLine.join(": "); // If we got multiple breakpoints, reassemble the text.
+						curData.message = curLine.join(": ").trim(); // If we got multiple breakpoints, reassemble the text.
 
-						if ((curData.sender.toLowerCase().startsWith("gm")) || (curData.sender.toLowerCase() == "narrator")) {
+						var matchGMPost = curData.message.match(/^(GM:\s*|GM Post:\s*|\[GM\]\s*|\(GM\)\s*|NARRATOR:\s*|\[NARRATOR\]\s*)(.+)/);
+
+						if ((matchGMPost) && (matchGMPost.length > 2)) {
+							curData.channel = "gmPost";
+							curData.message = matchGMPost[2];
+						} else if ((curData.sender.toLowerCase().startsWith("gm")) || (curData.sender.toLowerCase() == "narrator")) {
 							curData.channel = "gmPost";
 						} else if (curData.sender.startsWith("[")) {
 							curData.channel = "guild";
