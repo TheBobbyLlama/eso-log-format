@@ -207,13 +207,21 @@ function processLog(e) {
 							curData.message = curLine[0];
 						}
 
-						curData.channel = (curData.message[0] == "\"") ? "say" : "emote";
+						var matchGMPost = curData.message.match(/^(GM:\s*|GM Post:\s*|\[GM\]\s*|\(GM\)\s*|NARRATOR:\s*|\[NARRATOR\]\s*|\|+\s*)(.+)/);
+
+						if ((matchGMPost) && (matchGMPost.length > 2)) {
+							curData.channel = "gmPost";
+							curData.message = matchGMPost[2];
+						} else {
+							curData.channel = (curData.message[0] == "\"") ? "say" : "emote";
+						}
+
 						break;
 					default:
 						curData.sender = curLine.splice(0, 1)[0];
 						curData.message = curLine.join(": ").trim(); // If we got multiple breakpoints, reassemble the text.
 
-						var matchGMPost = curData.message.match(/^(GM:\s*|GM Post:\s*|\[GM\]\s*|\(GM\)\s*|NARRATOR:\s*|\[NARRATOR\]\s*)(.+)/);
+						var matchGMPost = curData.message.match(/^(GM:\s*|GM Post:\s*|\[GM\]\s*|\(GM\)\s*|NARRATOR:\s*|\[NARRATOR\]\s*|\|+\s*)(.+)/);
 
 						if ((matchGMPost) && (matchGMPost.length > 2)) {
 							curData.channel = "gmPost";
