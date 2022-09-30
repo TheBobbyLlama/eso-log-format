@@ -1,24 +1,29 @@
-var inputArea = document.getElementById("pastedText");
-var outputArea = document.getElementById("result");
-var resultScroller = document.getElementById("resultScroller");
-var timestampOption = document.getElementById("omitTimestamps");
-var guildChatOption = document.getElementById("guildChatGM");
-var characterGMOption = document.getElementById("characterGM");
-var sessionName = document.getElementById("sessionName");
-var exportButton = document.getElementById("exportFile");
+const inputArea = document.getElementById("pastedText");
+const outputArea = document.getElementById("result");
+const resultScroller = document.getElementById("resultScroller");
+const timestampOption = document.getElementById("omitTimestamps");
+const guildChatOption = document.getElementById("guildChatGM");
+const characterGMOption = document.getElementById("characterGM");
+const sessionName = document.getElementById("sessionName");
+const exportButton = document.getElementById("exportFile");
 
-var personaeList = document.getElementById("dramatisPersonae");
+const personaeList = document.getElementById("dramatisPersonae");
 
-var dramatisPersonae;
-var narrator = null;
-var logData = [];
-var scrollLockout = 0;
+let dramatisPersonae;
+let narrator = null;
+let logData = [];
+let scrollLockout = 0;
+
+// Keys must match element ids
+const formatOptions = {
+	correctQuotes: true,
+}
 
 function setSessionName() {
-	var today = new Date();
-	var year = today.getFullYear().toString();
-	var month = (today.getMonth() + 1).toString();
-	var day = today.getDate().toString();
+	const today = new Date();
+	const year = today.getFullYear().toString();
+	let month = (today.getMonth() + 1).toString();
+	let day = today.getDate().toString();
 
 	while (month.length < 2) { month = "0" + month; }
 	while (day.length < 2) { day = "0" + day; }
@@ -27,15 +32,16 @@ function setSessionName() {
 }
 
 function displayFormattedLog() {
-	var fileOutput = "";
+	let fileOutput = "";
 	outputArea.innerHTML = "";
 
-	for (var i = 0; i < logData.length; i++) {
-		var curMarkup = "<p>";
+	for (let i = 0; i < logData.length; i++) {
+		let curMarkup = "<p>";
 
 		if (logData[i].message) {
-			var curSender = logData[i].sender;
-			var curChannel = logData[i].channel;
+			let curSender = logData[i].sender;
+			let curChannel = logData[i].channel;
+			let curMessage = logData[i].message;
 
 			if ((curChannel == "gmPost") || ((guildChatOption.checked) && (curChannel == "guild")) || ((narrator) && (curSender == narrator))) {
 				curSender = "NARRATOR";
@@ -59,21 +65,42 @@ function displayFormattedLog() {
 				fileOutput += curSender;
 			}
 
+			// Double single quote converted to regular double quote.
+			if (formatOptions.correctQuotes) {
+				curMessage = curMessage.replace(/''/g, "\"");
+			}
+
 			switch (curChannel) {
 				case "emote":
-					if ((curSender) && (!logData[i].message.startsWith("'s ")) && (!logData[i].message.startsWith(", "))) {
+					if ((curSender) && (!curMessage.startsWith("'s ")) && (!curMessage.startsWith(", "))) {
 						curMarkup += " ";
 						fileOutput += " ";
 					}
+
 					break;
+				case "say":
+					if (formatOptions.correctQuotes) {
+						// Change single quote wrapper to double quote.
+						curMessage = curMessage.replace(/^'|'$/g, "\"");
+
+						// If there are no double quotes, wrap the message with them.
+						if (!curMessage.match(/"/g)) {
+							curMessage = `"${curMessage}"`;
+						}
+					}
 				default:
 					curMarkup += ": ";
 					fileOutput += ": ";
 			}
 
+			// Autocapitalize first letter if it's a quote.
+			if ((formatOptions.correctQuotes) && (curMessage[0] === "\"")) {
+				curMessage = curMessage.substr(0, 1) + curMessage[1].toUpperCase() + curMessage.substr(2);
+			}
+
 			// Message
-			curMarkup += "<span class='" + curChannel + "'>" + logData[i].message + "</span>";
-			fileOutput += logData[i].message;
+			curMarkup += "<span class='" + curChannel + "'>" + curMessage + "</span>";
+			fileOutput += curMessage;
 		}
 
 		outputArea.innerHTML += curMarkup + "</p>";
@@ -95,8 +122,8 @@ function displayFormattedLog() {
 }
 
 function processLog(e) {
-	var workingList;
-	var gmMarkup = "";
+	let workingList;
+	let gmMarkup = "";
 
 	dramatisPersonae = [];
 	logData = [];
@@ -105,11 +132,11 @@ function processLog(e) {
 	characterGMOption.innerHTML = "";
 
 	if (e.target.value) {
-		var lines = e.target.value.split("\n");
+		const lines = e.target.value.split("\n");
 
 		// First pass - Try to extract character names from normal /say text.
 		lines.forEach(element => {
-			var matchMe = element.match(/(\[.*?\] (?:@.+\/)?)([\w].+?)(@|:| 's)/);
+			const matchMe = element.match(/(\[.*?\] (?:@.+\/)?)([\w].+?)(@|:| 's)/);
 			
 			if ((matchMe) && (matchMe.length == 4) && (matchMe[2].length <= 25) &&  (matchMe[2].indexOf("->") < 0) && (!dramatisPersonae.find(item => item == matchMe[2]))) {
 				dramatisPersonae.push(matchMe[2]);
@@ -180,12 +207,13 @@ function processLog(e) {
 
 		// MAIN PASS - Turn lines into objects.
 		lines.forEach(element => {
-			var curData = {};
+			let matchGMPost;
+			const curData = {};
 
 			if (element.length > 10) {
-				var matchTimestamp = element.match(/(^\[\d{2}:\d{2}\]) /);
-				var timestamp = (matchTimestamp) ? matchTimestamp[0] : "";
-				var curLine = element.substr(timestamp.length).split(": ");
+				const matchTimestamp = element.match(/(^\[\d{2}:\d{2}\]) /);
+				const timestamp = (matchTimestamp) ? matchTimestamp[0] : "";
+				const curLine = element.substr(timestamp.length).split(": ");
 
 				if (timestamp.length) {
 					curData.timestamp = timestamp.trimEnd();
@@ -196,7 +224,7 @@ function processLog(e) {
 						console.log("Invalid chat line!", element);
 						break;
 					case 1:
-						for (var i = 0; i < dramatisPersonae.length; i++) {
+						for (let i = 0; i < dramatisPersonae.length; i++) {
 							if (curLine[0].startsWith(dramatisPersonae[i])) {
 								curData.sender = dramatisPersonae[i];
 								curData.message = curLine[0].substr(dramatisPersonae[i].length + 1).trim();
@@ -207,7 +235,7 @@ function processLog(e) {
 							curData.message = curLine[0];
 						}
 
-						var matchGMPost = curData.message.match(/^(GM:\s*|GM Post:\s*|\[GM\]\s*|\(GM\)\s*|NARRATOR:\s*|\[NARRATOR\]\s*|\|+\s*)(.+)/);
+						matchGMPost = curData.message.match(/^(GM:\s*|GM Post:\s*|\[GM\]\s*|\(GM\)\s*|NARRATOR:\s*|\[NARRATOR\]\s*|\|+\s*)(.+)/);
 
 						if ((matchGMPost) && (matchGMPost.length > 2)) {
 							curData.channel = "gmPost";
@@ -221,7 +249,7 @@ function processLog(e) {
 						curData.sender = curLine.splice(0, 1)[0];
 						curData.message = curLine.join(": ").trim(); // If we got multiple breakpoints, reassemble the text.
 
-						var matchGMPost = curData.message.match(/^(GM:\s*|GM Post:\s*|\[GM\]\s*|\(GM\)\s*|NARRATOR:\s*|\[NARRATOR\]\s*|\|+\s*)(.+)/);
+						matchGMPost = curData.message.match(/^(GM:\s*|GM Post:\s*|\[GM\]\s*|\(GM\)\s*|NARRATOR:\s*|\[NARRATOR\]\s*|\|+\s*)(.+)/);
 
 						if ((matchGMPost) && (matchGMPost.length > 2)) {
 							curData.channel = "gmPost";
@@ -262,9 +290,9 @@ function scrollInput() {
 	if (!scrollLockout) {
 		scrollLockout = setTimeout(clearLockout, 50);
 
-		var inputHeight = Math.max(inputArea.scrollHeight, inputArea.offsetHeight, inputArea.scrollHeight);
-		var outputHeight = Math.max(resultScroller.scrollHeight, resultScroller.offsetHeight, resultScroller.scrollHeight);
-		var ratio = inputArea.scrollTop / inputHeight;
+		const inputHeight = Math.max(inputArea.scrollHeight, inputArea.offsetHeight, inputArea.scrollHeight);
+		const outputHeight = Math.max(resultScroller.scrollHeight, resultScroller.offsetHeight, resultScroller.scrollHeight);
+		const ratio = inputArea.scrollTop / inputHeight;
 		resultScroller.scrollTop = ratio * outputHeight;
 	}
 }
@@ -273,12 +301,19 @@ function scrollOutput() {
 	if (!scrollLockout) {
 		scrollLockout = setTimeout(clearLockout, 50);
 
-		var inputHeight = Math.max(inputArea.scrollHeight, inputArea.offsetHeight, inputArea.scrollHeight);
-		var outputHeight = Math.max(resultScroller.scrollHeight, resultScroller.offsetHeight, resultScroller.scrollHeight);
-		var ratio = resultScroller.scrollTop / outputHeight;
+		const inputHeight = Math.max(inputArea.scrollHeight, inputArea.offsetHeight, inputArea.scrollHeight);
+		const outputHeight = Math.max(resultScroller.scrollHeight, resultScroller.offsetHeight, resultScroller.scrollHeight);
+		const ratio = resultScroller.scrollTop / outputHeight;
 		inputArea.scrollTop = ratio * inputHeight;
 	}
 }
+
+Object.keys(formatOptions).forEach(key => {
+	document.getElementById(key).addEventListener("change", () => {
+		formatOptions[key] = !formatOptions[key];
+		displayFormattedLog();
+	})
+});
 
 timestampOption.addEventListener("change", displayFormattedLog);
 guildChatOption.addEventListener("change", displayFormattedLog);

@@ -114,16 +114,6 @@ textarea {
 	overflow: auto;
 }
 
-#optionsCard {
-	align-items: center;
-	display: flex;
-	flex-direction: column;
-}
-
-#optionsCard div + div {
-	margin-top: 8px;
-}
-
 #editingPane {
 	display: flex;
 	flex-basis: 99%;
@@ -170,6 +160,16 @@ textarea {
 
 .aside {
 	color: #d0d0d0;
+}
+
+.optionsCard {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+}
+
+.optionsCard div + div {
+	margin-top: 8px;
 }
 
 .timestamp {
