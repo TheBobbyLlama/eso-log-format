@@ -129,6 +129,7 @@ textarea {
 
 #inputPane textarea {
 	flex-basis: 99%;
+	padding: 2px 4px;
 	width: 100%;
 }
 
