@@ -16,6 +16,8 @@ let scrollLockout = 0;
 
 // Keys must match element ids
 const formatOptions = {
+	correctCapitalization: true,
+	correctPunctuation: true,
 	correctQuotes: true,
 }
 
@@ -75,6 +77,10 @@ function displayFormattedLog() {
 					if ((curSender) && (!curMessage.startsWith("'s ")) && (!curMessage.startsWith(", "))) {
 						curMarkup += " ";
 						fileOutput += " ";
+
+						if (formatOptions.correctCapitalization) {
+							curMessage = curMessage[0].toLowerCase() + curMessage.substr(1);
+						}
 					}
 
 					break;
@@ -88,14 +94,37 @@ function displayFormattedLog() {
 							curMessage = `"${curMessage}"`;
 						}
 					}
+
+					if (formatOptions.correctCapitalization) {
+						let tmpIndex = (curMessage[0] === "\"") ? 1 : 0;
+						curMessage = curMessage.substr(0, tmpIndex) + curMessage[tmpIndex].toUpperCase() + curMessage.substr(tmpIndex + 1);
+					}
+
+					curMarkup += ": ";
+					fileOutput += ": ";
+					break;
 				default:
 					curMarkup += ": ";
 					fileOutput += ": ";
+
+					// Autocapitalize first letter if it's a quote.
+					if ((formatOptions.correctCapitalization) && (curMessage[0] === "\"")) {
+						curMessage = curMessage.substr(0, 1) + curMessage[1].toUpperCase() + curMessage.substr(2);
+					}
+
+					break;
 			}
 
-			// Autocapitalize first letter if it's a quote.
-			if ((formatOptions.correctQuotes) && (curMessage[0] === "\"")) {
-				curMessage = curMessage.substr(0, 1) + curMessage[1].toUpperCase() + curMessage.substr(2);
+			if (formatOptions.correctPunctuation) {
+				let tmpIndex = curMessage.endsWith("\"") ? 2 : 1;
+
+				if (!curMessage[curMessage.length - tmpIndex].match(/[.?!‽)\]}+>]/)) {
+					curMessage = curMessage.substr(0, curMessage.length - tmpIndex + 1) + "." + curMessage.substr(curMessage.length - tmpIndex + 1);
+				}
+
+				// Can't handle "I'll" here because of false positives with "Ill"
+				curMessage = curMessage.replace(/(?<=^|"|\s)Im(?=\s)/gi, "I'm")
+										.replace(/(?<=^|"|\s)Ive(?=\s)/gi, "I've");
 			}
 
 			// Message

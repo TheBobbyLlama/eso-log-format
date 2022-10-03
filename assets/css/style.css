@@ -110,6 +110,7 @@ textarea {
 }
 
 #listScroller {
+	margin: 0 8px;
 	max-height: 240px;
 	overflow: auto;
 }
@@ -164,12 +165,16 @@ textarea {
 }
 
 .optionsCard {
-	align-items: center;
+	align-items: flex-start;
 	display: flex;
 	flex-direction: column;
 }
 
-.optionsCard div + div {
+.optionsCard > div {
+	margin: 0 8px;
+}
+
+.optionsCard > div + div {
 	margin-top: 8px;
 }
 
