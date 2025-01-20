@@ -95,7 +95,7 @@ function displayFormattedLog() {
 						}
 					}
 
-					if (formatOptions.correctCapitalization) {
+					if ((formatOptions.correctCapitalization) && (curMessage.length > 1)) {
 						let tmpIndex = (curMessage[0] === "\"") ? 1 : 0;
 						curMessage = curMessage.substr(0, tmpIndex) + curMessage[tmpIndex].toUpperCase() + curMessage.substr(tmpIndex + 1);
 					}
@@ -115,7 +115,7 @@ function displayFormattedLog() {
 					break;
 			}
 
-			if (formatOptions.correctPunctuation) {
+			if ((formatOptions.correctPunctuation) && (curMessage.length > 1)) {
 				let tmpIndex = curMessage.endsWith("\"") ? 2 : 1;
 
 				if (!curMessage[curMessage.length - tmpIndex].match(/[.?!‽)\]}+>]/)) {
